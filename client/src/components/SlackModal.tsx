@@ -81,22 +81,23 @@ export const SlackModal: React.FC<SlackModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#0e1322] border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl shadow-indigo-950/40 text-slate-200 flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="border rounded-2xl w-full max-w-lg shadow-2xl flex flex-col" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#0c101d]">
+        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ backgroundColor: 'var(--bg-header)', borderColor: 'var(--border-card)' }}>
           <div className="flex items-center space-x-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[#4A154B]/30 text-[#ECB22E] flex items-center justify-center border border-[#ECB22E]/30">
+            <div className="w-7 h-7 rounded-lg bg-[#4A154B]/20 text-[#ECB22E] flex items-center justify-center border border-[#ECB22E]/30">
               <MessageSquare className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white">Slack Rate-Limit Integration</h2>
-              <p className="text-xs text-slate-400">Receive real-time alerts when sender hourly limits are reached</p>
+              <h2 className="text-base font-semibold" style={{ color: 'var(--text-main)' }}>Slack Rate-Limit Integration</h2>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Receive real-time alerts when sender hourly limits are reached</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-lg hover:bg-slate-500/10 transition-colors"
+            style={{ color: 'var(--text-muted)' }}
           >
             <X className="w-5 h-5" />
           </button>
@@ -108,15 +109,16 @@ export const SlackModal: React.FC<SlackModalProps> = ({
           <div
             className={`p-3 rounded-xl border flex items-center justify-between text-xs ${
               slackStatus.connected
-                ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300'
-                : 'bg-slate-800/40 border-slate-700/60 text-slate-400'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                : 'border'
             }`}
+            style={!slackStatus.connected ? { backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' } : {}}
           >
             <div className="flex items-center space-x-2">
               {slackStatus.connected ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-slate-400 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
               )}
               <span>
                 {slackStatus.connected
@@ -128,7 +130,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
             {slackStatus.connected && (
               <button
                 onClick={handleDisconnect}
-                className="flex items-center space-x-1 text-rose-400 hover:text-rose-300 transition-colors text-[11px] font-medium"
+                className="flex items-center space-x-1 text-rose-500 hover:underline transition-all text-[11px] font-semibold"
               >
                 <Unlink className="w-3 h-3" />
                 <span>Disconnect</span>
@@ -140,14 +142,14 @@ export const SlackModal: React.FC<SlackModalProps> = ({
             <div
               className={`p-3 text-xs rounded-xl flex items-center space-x-2 border ${
                 feedback.type === 'success'
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400'
               }`}
             >
               {feedback.type === 'success' ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
               )}
               <span>{feedback.message}</span>
             </div>
@@ -156,7 +158,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
           {/* Connect Form */}
           <form onSubmit={handleSave} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-main)' }}>
                 Slack Incoming Webhook URL
               </label>
               <input
@@ -164,21 +166,23 @@ export const SlackModal: React.FC<SlackModalProps> = ({
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
                 placeholder="https://hooks.slack.com/services/T.../B.../..."
-                className="w-full px-3 py-2 text-xs bg-[#0c101d] border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none font-mono"
+                className="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono"
+                style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-input)', color: 'var(--text-main)' }}
               />
-              <p className="text-[10px] text-slate-500 mt-1">
+              <p className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>
                 Paste your Slack App Incoming Webhook URL or test webhook from webhook.site
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Alert Channel Name</label>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-main)' }}>Alert Channel Name</label>
               <input
                 type="text"
                 value={channel}
                 onChange={(e) => setChannel(e.target.value)}
                 placeholder="#email-alerts"
-                className="w-full px-3 py-2 text-xs bg-[#0c101d] border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                className="w-full px-3 py-2 text-xs border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-input)', color: 'var(--text-main)' }}
               />
             </div>
 
@@ -196,7 +200,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
                 type="button"
                 onClick={handleTriggerTest}
                 disabled={isTesting || (!slackStatus.connected && !webhookUrl)}
-                className="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-lg transition-all disabled:opacity-40"
+                className="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold text-amber-600 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-lg transition-all disabled:opacity-40"
                 title="Send a live test alert to Slack for assignment video demo"
               >
                 <BellRing className="w-3.5 h-3.5" />
@@ -206,8 +210,8 @@ export const SlackModal: React.FC<SlackModalProps> = ({
           </form>
 
           {/* Explanatory Context */}
-          <div className="p-3 bg-[#0c101d] border border-slate-800/80 rounded-xl text-[11px] text-slate-400 space-y-1">
-            <p className="font-medium text-slate-300">🛡️ Real-World Resilience:</p>
+          <div className="p-3 border rounded-xl text-[11px] space-y-1" style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' }}>
+            <p className="font-semibold" style={{ color: 'var(--text-main)' }}>🛡️ Real-World Resilience:</p>
             <p>
               When a sender reaches their hourly quota (e.g. 200 emails/hr), jobs are automatically deferred to the next hour window in BullMQ, and a live alert is sent to your Slack channel.
             </p>

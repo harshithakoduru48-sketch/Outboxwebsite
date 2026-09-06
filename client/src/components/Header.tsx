@@ -1,10 +1,12 @@
 import React from 'react';
 import { User, SlackStatus } from '../types';
-import { Mail, Activity, MessageSquare, LogOut, Send } from 'lucide-react';
+import { Mail, Activity, MessageSquare, LogOut, Send, Sun, Moon } from 'lucide-react';
 
 interface HeaderProps {
   user: User | null;
   slackStatus: SlackStatus;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
   onOpenCompose: () => void;
   onOpenSlack: () => void;
   onLogout: () => void;
@@ -13,12 +15,14 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   user,
   slackStatus,
+  theme,
+  onToggleTheme,
   onOpenCompose,
   onOpenSlack,
   onLogout,
 }) => {
   return (
-    <header className="border-b border-slate-800/80 bg-[#0c101d]/90 backdrop-blur-md sticky top-0 z-30">
+    <header className="border-b sticky top-0 z-30 transition-colors backdrop-blur-md" style={{ backgroundColor: 'var(--bg-header)', borderColor: 'var(--border-card)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Name */}
         <div className="flex items-center space-x-3">
@@ -27,8 +31,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-bold text-lg tracking-tight text-white">ReachInbox</span>
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-md uppercase tracking-wider">
+              <span className="font-bold text-lg tracking-tight" style={{ color: 'var(--text-main)' }}>ReachInbox</span>
+              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 rounded-md uppercase tracking-wider">
                 Scheduler
               </span>
             </div>
@@ -36,16 +40,27 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Action Controls & Navigation */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={onToggleTheme}
+            className="p-2 rounded-lg border transition-all hover:scale-105"
+            style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' }}
+            title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+          </button>
+
           {/* Live BullMQ Dashboard Link */}
           <a
             href="/admin/queues"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg transition-all shadow-sm"
+            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-all shadow-sm"
+            style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
             title="Open Live BullMQ Worker Queue Dashboard"
           >
-            <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
             <span>BullMQ Live</span>
           </a>
 
@@ -54,15 +69,16 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onOpenSlack}
             className={`flex items-center space-x-2 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
               slackStatus.connected
-                ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50 hover:bg-emerald-900/50'
-                : 'bg-slate-800/60 text-slate-300 border-slate-700/60 hover:bg-slate-800 hover:text-white'
+                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/30'
+                : 'border'
             }`}
+            style={!slackStatus.connected ? { backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' } : {}}
           >
-            <MessageSquare className={`w-3.5 h-3.5 ${slackStatus.connected ? 'text-emerald-400' : 'text-slate-400'}`} />
+            <MessageSquare className={`w-3.5 h-3.5 ${slackStatus.connected ? 'text-emerald-500' : 'text-slate-400'}`} />
             <span>{slackStatus.connected ? 'Slack Connected' : 'Connect Slack'}</span>
             <span
               className={`w-2 h-2 rounded-full ${
-                slackStatus.connected ? 'bg-emerald-400 ring-2 ring-emerald-400/20' : 'bg-slate-500'
+                slackStatus.connected ? 'bg-emerald-500 ring-2 ring-emerald-500/20' : 'bg-slate-400'
               }`}
             />
           </button>
@@ -78,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* User Profile & Logout */}
           {user && (
-            <div className="flex items-center space-x-3 pl-2 border-l border-slate-800">
+            <div className="flex items-center space-x-3 pl-2 border-l" style={{ borderColor: 'var(--border-card)' }}>
               <div className="flex items-center space-x-2.5">
                 {user.avatar ? (
                   <img
@@ -92,10 +108,10 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 )}
                 <div className="hidden md:block text-left">
-                  <div className="text-xs font-medium text-slate-200 leading-none truncate max-w-[120px]">
+                  <div className="text-xs font-semibold leading-none truncate max-w-[120px]" style={{ color: 'var(--text-main)' }}>
                     {user.name}
                   </div>
-                  <div className="text-[11px] text-slate-400 leading-none mt-1 truncate max-w-[140px]">
+                  <div className="text-[11px] leading-none mt-1 truncate max-w-[140px]" style={{ color: 'var(--text-muted)' }}>
                     {user.email}
                   </div>
                 </div>
@@ -103,7 +119,8 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={onLogout}
-                className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800/60 rounded-lg transition-colors"
+                className="p-1.5 hover:text-rose-500 rounded-lg transition-colors"
+                style={{ color: 'var(--text-muted)' }}
                 title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />
