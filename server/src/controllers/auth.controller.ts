@@ -65,17 +65,26 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
 
 export async function demoLogin(req: Request, res: Response): Promise<void> {
   try {
-    const demoEmail = 'admin@reachinbox.ai';
-    const user = await prisma.user.upsert({
-      where: { email: demoEmail },
-      update: {},
-      create: {
-        googleId: 'demo-reachinbox-user-1',
-        email: demoEmail,
-        name: 'Alex Rivera (ReachInbox)',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      },
-    });
+    const demoEmail = req.body?.email || 'admin@reachinbox.ai';
+    const demoName = req.body?.name || 'ReachInbox Evaluator';
+    const googleId = 'demo_' + Buffer.from(demoEmail).toString('hex').slice(0, 24);
+
+    let user = await prisma.user.findUnique({ where: { email: demoEmail } });
+    if (user) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { name: demoName },
+      });
+    } else {
+      user = await prisma.user.create({
+        data: {
+          googleId,
+          email: demoEmail,
+          name: demoName,
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        },
+      });
+    }
 
     res.json({ success: true, user });
   } catch (error: any) {
