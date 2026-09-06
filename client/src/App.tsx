@@ -22,7 +22,7 @@ import { Clock, Send } from 'lucide-react';
 
 const GOOGLE_CLIENT_ID =
   (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID ||
-  '345479034567-placeholder.apps.googleusercontent.com';
+  '98429872965-eefpl46hoc76r4uv0m6ecg47otrhiv5o.apps.googleusercontent.com';
 
 export function AppContent() {
   const [user, setUser] = useState<User | null>(() => {
