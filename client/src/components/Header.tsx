@@ -1,11 +1,11 @@
 import React from 'react';
 import { User, SlackStatus } from '../types';
-import { Mail, Activity, MessageSquare, LogOut, Send, Sun, Moon } from 'lucide-react';
+import { Mail, Activity, MessageSquare, LogOut, Send, Sun, Moon, Sparkles, Compass } from 'lucide-react';
 
 interface HeaderProps {
   user: User | null;
   slackStatus: SlackStatus;
-  theme: 'light' | 'dark';
+  theme: string;
   onToggleTheme: () => void;
   onOpenCompose: () => void;
   onOpenSlack: () => void;
@@ -21,6 +21,24 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSlack,
   onLogout,
 }) => {
+  const getThemeDisplay = () => {
+    switch (theme) {
+      case 'dark':
+      case 'midnight':
+        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
+      case 'light':
+        return { icon: <Sun className="w-4 h-4 text-amber-500" />, label: 'Light' };
+      case 'cyber':
+        return { icon: <Sparkles className="w-4 h-4 text-cyan-400" />, label: 'Cyber' };
+      case 'ocean':
+        return { icon: <Compass className="w-4 h-4 text-blue-400" />, label: 'Ocean' };
+      default:
+        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
+    }
+  };
+
+  const themeInfo = getThemeDisplay();
+
   return (
     <header className="border-b sticky top-0 z-30 transition-colors backdrop-blur-md" style={{ backgroundColor: 'var(--bg-header)', borderColor: 'var(--border-card)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -44,11 +62,12 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Theme Toggle Button */}
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-lg border transition-all hover:scale-105"
-            style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' }}
-            title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg border transition-all hover:scale-105"
+            style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
+            title={`Current: ${themeInfo.label} theme. Click to cycle themes.`}
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+            {themeInfo.icon}
+            <span className="text-xs font-semibold">{themeInfo.label}</span>
           </button>
 
           {/* Live BullMQ Dashboard Link */}

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { loginWithGoogleCredential, loginWithDemo } from '../api';
 import { User } from '../types';
-import { Mail, ShieldCheck, ArrowRight, Zap, CheckCircle2, Sun, Moon } from 'lucide-react';
+import { Mail, ShieldCheck, ArrowRight, Zap, CheckCircle2, Sun, Moon, Sparkles, Compass } from 'lucide-react';
 
 interface LoginViewProps {
-  theme: 'light' | 'dark';
+  theme: string;
   onToggleTheme: () => void;
   onLoginSuccess: (user: User) => void;
 }
@@ -13,6 +13,24 @@ interface LoginViewProps {
 export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLoginSuccess }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const getThemeDisplay = () => {
+    switch (theme) {
+      case 'dark':
+      case 'midnight':
+        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
+      case 'light':
+        return { icon: <Sun className="w-4 h-4 text-amber-500" />, label: 'Light' };
+      case 'cyber':
+        return { icon: <Sparkles className="w-4 h-4 text-cyan-400" />, label: 'Cyber' };
+      case 'ocean':
+        return { icon: <Compass className="w-4 h-4 text-blue-400" />, label: 'Ocean' };
+      default:
+        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
+    }
+  };
+
+  const themeInfo = getThemeDisplay();
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
@@ -51,11 +69,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLo
       <div className="absolute top-6 right-6 z-20">
         <button
           onClick={onToggleTheme}
-          className="p-2.5 rounded-xl border shadow-sm transition-all hover:scale-105"
-          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' }}
-          title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+          className="flex items-center space-x-1.5 px-3 py-2 rounded-xl border shadow-sm transition-all hover:scale-105"
+          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
+          title={`Current: ${themeInfo.label} theme. Click to cycle themes.`}
         >
-          {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+          {themeInfo.icon}
+          <span className="text-xs font-semibold">{themeInfo.label}</span>
         </button>
       </div>
 

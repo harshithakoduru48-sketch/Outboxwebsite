@@ -25,9 +25,9 @@ const GOOGLE_CLIENT_ID =
   '98429872965-eefpl46hoc76r4uv0m6ecg47otrhiv5o.apps.googleusercontent.com';
 
 export function AppContent() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+  const [theme, setTheme] = useState<string>(() => {
     const saved = localStorage.getItem('reachinbox_theme');
-    return (saved as 'light' | 'dark') || 'light';
+    return saved || 'midnight';
   });
 
   const [user, setUser] = useState<User | null>(() => {
@@ -67,7 +67,12 @@ export function AppContent() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme((prev) => {
+      if (prev === 'midnight' || prev === 'dark') return 'light';
+      if (prev === 'light') return 'cyber';
+      if (prev === 'cyber') return 'ocean';
+      return 'midnight';
+    });
   };
 
   const loadData = useCallback(async (showLoading = false) => {
