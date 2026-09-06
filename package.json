@@ -1,0 +1,16 @@
+{
+  "name": "reachinbox-email-job-scheduler",
+  "version": "1.0.0",
+  "description": "ReachInbox Full-stack Email Job Scheduler - Production-grade email scheduler service with BullMQ, Redis, Ethereal fake SMTP, Slack alerting, and React dashboard",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build": "npm --prefix server run build ; npm --prefix client run build",
+    "start:server": "npm start --prefix server"
+  },
+  "author": "ReachInbox Engineering Candidate",
+  "license": "MIT"
+}
