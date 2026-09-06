@@ -66,13 +66,8 @@ export function AppContent() {
     localStorage.setItem('reachinbox_theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => {
-      if (prev === 'midnight' || prev === 'dark') return 'light';
-      if (prev === 'light') return 'cyber';
-      if (prev === 'cyber') return 'ocean';
-      return 'midnight';
-    });
+  const handleSelectTheme = (newTheme: string) => {
+    setTheme(newTheme);
   };
 
   const loadData = useCallback(async (showLoading = false) => {
@@ -169,7 +164,7 @@ export function AppContent() {
     return (
       <LoginView
         theme={theme}
-        onToggleTheme={toggleTheme}
+        onSelectTheme={handleSelectTheme}
         onLoginSuccess={handleLoginSuccess}
       />
     );
@@ -182,7 +177,7 @@ export function AppContent() {
         user={user}
         slackStatus={slackStatus}
         theme={theme}
-        onToggleTheme={toggleTheme}
+        onSelectTheme={handleSelectTheme}
         onOpenCompose={() => setIsComposeOpen(true)}
         onOpenSlack={() => setIsSlackOpen(true)}
         onLogout={handleLogout}

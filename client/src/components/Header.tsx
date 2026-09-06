@@ -1,12 +1,12 @@
 import React from 'react';
 import { User, SlackStatus } from '../types';
-import { Mail, Activity, MessageSquare, LogOut, Send, Sun, Moon, Sparkles, Compass } from 'lucide-react';
+import { Mail, Activity, MessageSquare, LogOut, Send } from 'lucide-react';
 
 interface HeaderProps {
   user: User | null;
   slackStatus: SlackStatus;
   theme: string;
-  onToggleTheme: () => void;
+  onSelectTheme: (theme: string) => void;
   onOpenCompose: () => void;
   onOpenSlack: () => void;
   onLogout: () => void;
@@ -16,28 +16,17 @@ export const Header: React.FC<HeaderProps> = ({
   user,
   slackStatus,
   theme,
-  onToggleTheme,
+  onSelectTheme,
   onOpenCompose,
   onOpenSlack,
   onLogout,
 }) => {
-  const getThemeDisplay = () => {
-    switch (theme) {
-      case 'dark':
-      case 'midnight':
-        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
-      case 'light':
-        return { icon: <Sun className="w-4 h-4 text-amber-500" />, label: 'Light' };
-      case 'cyber':
-        return { icon: <Sparkles className="w-4 h-4 text-cyan-400" />, label: 'Cyber' };
-      case 'ocean':
-        return { icon: <Compass className="w-4 h-4 text-blue-400" />, label: 'Ocean' };
-      default:
-        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
-    }
-  };
-
-  const themeInfo = getThemeDisplay();
+  const themes = [
+    { id: 'midnight', label: '🌙 Dark' },
+    { id: 'light', label: '☀️ Light' },
+    { id: 'cyber', label: '🔮 Cyber' },
+    { id: 'ocean', label: '🌊 Ocean' },
+  ];
 
   return (
     <header className="border-b sticky top-0 z-30 transition-colors backdrop-blur-md" style={{ backgroundColor: 'var(--bg-header)', borderColor: 'var(--border-card)' }}>
@@ -59,16 +48,24 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls & Navigation */}
         <div className="flex items-center space-x-2.5">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={onToggleTheme}
-            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg border transition-all hover:scale-105"
-            style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
-            title={`Current: ${themeInfo.label} theme. Click to cycle themes.`}
-          >
-            {themeInfo.icon}
-            <span className="text-xs font-semibold">{themeInfo.label}</span>
-          </button>
+          {/* Theme Palette Bar */}
+          <div className="flex items-center p-0.5 rounded-lg border shadow-sm" style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)' }}>
+            {themes.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => onSelectTheme(t.id)}
+                className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${
+                  (theme === t.id || (theme === 'dark' && t.id === 'midnight'))
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'hover:opacity-80'
+                }`}
+                style={(theme !== t.id && !(theme === 'dark' && t.id === 'midnight')) ? { color: 'var(--text-muted)' } : {}}
+                title={`Switch to ${t.label} theme`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
 
           {/* Live BullMQ Dashboard Link */}
           <a

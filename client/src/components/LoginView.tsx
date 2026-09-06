@@ -2,35 +2,24 @@ import React, { useState } from 'react';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { loginWithGoogleCredential, loginWithDemo } from '../api';
 import { User } from '../types';
-import { Mail, ShieldCheck, ArrowRight, Zap, CheckCircle2, Sun, Moon, Sparkles, Compass } from 'lucide-react';
+import { Mail, ShieldCheck, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 
 interface LoginViewProps {
   theme: string;
-  onToggleTheme: () => void;
+  onSelectTheme: (theme: string) => void;
   onLoginSuccess: (user: User) => void;
 }
 
-export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLoginSuccess }) => {
+export const LoginView: React.FC<LoginViewProps> = ({ theme, onSelectTheme, onLoginSuccess }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getThemeDisplay = () => {
-    switch (theme) {
-      case 'dark':
-      case 'midnight':
-        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
-      case 'light':
-        return { icon: <Sun className="w-4 h-4 text-amber-500" />, label: 'Light' };
-      case 'cyber':
-        return { icon: <Sparkles className="w-4 h-4 text-cyan-400" />, label: 'Cyber' };
-      case 'ocean':
-        return { icon: <Compass className="w-4 h-4 text-blue-400" />, label: 'Ocean' };
-      default:
-        return { icon: <Moon className="w-4 h-4 text-indigo-400" />, label: 'Midnight' };
-    }
-  };
-
-  const themeInfo = getThemeDisplay();
+  const themes = [
+    { id: 'midnight', label: '🌙 Dark' },
+    { id: 'light', label: '☀️ Light' },
+    { id: 'cyber', label: '🔮 Cyber' },
+    { id: 'ocean', label: '🌊 Ocean' },
+  ];
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
@@ -65,17 +54,24 @@ export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLo
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 relative overflow-hidden transition-colors" style={{ backgroundColor: 'var(--bg-app)' }}>
-      {/* Theme toggle in top corner */}
-      <div className="absolute top-6 right-6 z-20">
-        <button
-          onClick={onToggleTheme}
-          className="flex items-center space-x-1.5 px-3 py-2 rounded-xl border shadow-sm transition-all hover:scale-105"
-          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
-          title={`Current: ${themeInfo.label} theme. Click to cycle themes.`}
-        >
-          {themeInfo.icon}
-          <span className="text-xs font-semibold">{themeInfo.label}</span>
-        </button>
+      {/* Theme Selector in top corner */}
+      <div className="absolute top-6 right-6 z-20 flex items-center p-1 rounded-xl border shadow-lg backdrop-blur-md" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-card)' }}>
+        <span className="text-[10px] uppercase font-bold px-2" style={{ color: 'var(--text-muted)' }}>Theme:</span>
+        {themes.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => onSelectTheme(t.id)}
+            className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              (theme === t.id || (theme === 'dark' && t.id === 'midnight'))
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'hover:opacity-80'
+            }`}
+            style={(theme !== t.id && !(theme === 'dark' && t.id === 'midnight')) ? { color: 'var(--text-muted)' } : {}}
+            title={`Switch to ${t.label} theme`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       {/* Background Gradient Blurs */}
@@ -89,7 +85,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLo
           </div>
           <div className="flex items-center justify-center space-x-2 mb-1">
             <h1 className="text-2xl font-bold tracking-tight m-0" style={{ color: 'var(--text-main)' }}>ReachInbox</h1>
-            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 rounded uppercase tracking-wider">
+            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 rounded-md uppercase tracking-wider">
               Scheduler
             </span>
           </div>
@@ -112,7 +108,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ theme, onToggleTheme, onLo
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google OAuth login failed')}
-              theme={theme === 'dark' ? 'filled_black' : 'outline'}
+              theme={theme === 'light' ? 'outline' : 'filled_black'}
               size="large"
               shape="rectangular"
               text="continue_with"
