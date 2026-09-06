@@ -25,11 +25,6 @@ const GOOGLE_CLIENT_ID =
   '98429872965-eefpl46hoc76r4uv0m6ecg47otrhiv5o.apps.googleusercontent.com';
 
 export function AppContent() {
-  const [theme, setTheme] = useState<string>(() => {
-    const saved = localStorage.getItem('reachinbox_theme');
-    return saved || 'midnight';
-  });
-
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('reachinbox_user');
     return saved ? JSON.parse(saved) : null;
@@ -59,16 +54,6 @@ export function AppContent() {
 
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isSlackOpen, setIsSlackOpen] = useState(false);
-
-  // Apply theme to HTML attribute
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('reachinbox_theme', theme);
-  }, [theme]);
-
-  const handleSelectTheme = (newTheme: string) => {
-    setTheme(newTheme);
-  };
 
   const loadData = useCallback(async (showLoading = false) => {
     try {
@@ -161,23 +146,15 @@ export function AppContent() {
   };
 
   if (!user) {
-    return (
-      <LoginView
-        theme={theme}
-        onSelectTheme={handleSelectTheme}
-        onLoginSuccess={handleLoginSuccess}
-      />
-    );
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col transition-colors" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-main)' }}>
-      {/* Header with Navigation, Theme Switcher & User Details */}
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-main)' }}>
+      {/* Clean Header with Logo, BullMQ link, Slack status, Compose button & User Profile */}
       <Header
         user={user}
         slackStatus={slackStatus}
-        theme={theme}
-        onSelectTheme={handleSelectTheme}
         onOpenCompose={() => setIsComposeOpen(true)}
         onOpenSlack={() => setIsSlackOpen(true)}
         onLogout={handleLogout}
@@ -206,13 +183,13 @@ export function AppContent() {
               onClick={() => setActiveTab('scheduled')}
               className={`flex items-center space-x-2 py-3 px-4 text-xs font-semibold border-b-2 transition-all ${
                 activeTab === 'scheduled'
-                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? 'border-indigo-500 text-indigo-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
               <Clock className="w-4 h-4" />
               <span>Scheduled Emails</span>
-              <span className="ml-1.5 px-2 py-0.5 text-[10px] rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono font-semibold">
+              <span className="ml-1.5 px-2 py-0.5 text-[10px] rounded-full bg-indigo-500/15 text-indigo-400 font-mono font-semibold border border-indigo-500/30">
                 {scheduledEmails.length}
               </span>
             </button>
@@ -221,13 +198,13 @@ export function AppContent() {
               onClick={() => setActiveTab('sent')}
               className={`flex items-center space-x-2 py-3 px-4 text-xs font-semibold border-b-2 transition-all ${
                 activeTab === 'sent'
-                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? 'border-indigo-500 text-indigo-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
               <Send className="w-4 h-4" />
               <span>Sent Emails</span>
-              <span className="ml-1.5 px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-semibold">
+              <span className="ml-1.5 px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/15 text-emerald-400 font-mono font-semibold border border-emerald-500/30">
                 {sentEmails.length}
               </span>
             </button>

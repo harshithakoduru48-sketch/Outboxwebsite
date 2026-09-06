@@ -5,8 +5,6 @@ import { Mail, Activity, MessageSquare, LogOut, Send } from 'lucide-react';
 interface HeaderProps {
   user: User | null;
   slackStatus: SlackStatus;
-  theme: string;
-  onSelectTheme: (theme: string) => void;
   onOpenCompose: () => void;
   onOpenSlack: () => void;
   onLogout: () => void;
@@ -15,19 +13,10 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   user,
   slackStatus,
-  theme,
-  onSelectTheme,
   onOpenCompose,
   onOpenSlack,
   onLogout,
 }) => {
-  const themes = [
-    { id: 'midnight', label: '🌙 Dark' },
-    { id: 'light', label: '☀️ Light' },
-    { id: 'cyber', label: '🔮 Cyber' },
-    { id: 'ocean', label: '🌊 Ocean' },
-  ];
-
   return (
     <header className="border-b sticky top-0 z-30 transition-colors backdrop-blur-md" style={{ backgroundColor: 'var(--bg-header)', borderColor: 'var(--border-card)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -39,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center space-x-2">
               <span className="font-bold text-lg tracking-tight" style={{ color: 'var(--text-main)' }}>ReachInbox</span>
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 rounded-md uppercase tracking-wider">
+              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-md uppercase tracking-wider">
                 Scheduler
               </span>
             </div>
@@ -47,36 +36,17 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Action Controls & Navigation */}
-        <div className="flex items-center space-x-2.5">
-          {/* Theme Palette Bar */}
-          <div className="flex items-center p-0.5 rounded-lg border shadow-sm" style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)' }}>
-            {themes.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => onSelectTheme(t.id)}
-                className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${
-                  (theme === t.id || (theme === 'dark' && t.id === 'midnight'))
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'hover:opacity-80'
-                }`}
-                style={(theme !== t.id && !(theme === 'dark' && t.id === 'midnight')) ? { color: 'var(--text-muted)' } : {}}
-                title={`Switch to ${t.label} theme`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
+        <div className="flex items-center space-x-3">
           {/* Live BullMQ Dashboard Link */}
           <a
             href="/admin/queues"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-all shadow-sm"
+            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-all shadow-sm hover:scale-105"
             style={{ backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-main)' }}
             title="Open Live BullMQ Worker Queue Dashboard"
           >
-            <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+            <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
             <span>BullMQ Live</span>
           </a>
 
@@ -85,16 +55,16 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onOpenSlack}
             className={`flex items-center space-x-2 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
               slackStatus.connected
-                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/30'
-                : 'border'
+                ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                : 'border hover:bg-slate-500/10'
             }`}
             style={!slackStatus.connected ? { backgroundColor: 'var(--bg-pill)', borderColor: 'var(--border-card)', color: 'var(--text-muted)' } : {}}
           >
-            <MessageSquare className={`w-3.5 h-3.5 ${slackStatus.connected ? 'text-emerald-500' : 'text-slate-400'}`} />
+            <MessageSquare className={`w-3.5 h-3.5 ${slackStatus.connected ? 'text-emerald-400' : 'text-slate-400'}`} />
             <span>{slackStatus.connected ? 'Slack Connected' : 'Connect Slack'}</span>
             <span
               className={`w-2 h-2 rounded-full ${
-                slackStatus.connected ? 'bg-emerald-500 ring-2 ring-emerald-500/20' : 'bg-slate-400'
+                slackStatus.connected ? 'bg-emerald-400 ring-2 ring-emerald-400/20' : 'bg-slate-400'
               }`}
             />
           </button>
@@ -102,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Primary Compose Button */}
           <button
             onClick={onOpenCompose}
-            className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 rounded-lg shadow-md shadow-indigo-600/25 transition-all active:scale-95 ring-1 ring-indigo-400/30"
+            className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 rounded-lg shadow-md shadow-indigo-600/25 transition-all active:scale-95 ring-1 ring-indigo-400/30"
           >
             <Send className="w-4 h-4" />
             <span>Compose New Email</span>
@@ -135,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={onLogout}
-                className="p-1.5 hover:text-rose-500 rounded-lg transition-colors"
+                className="p-1.5 hover:text-rose-400 rounded-lg transition-colors"
                 style={{ color: 'var(--text-muted)' }}
                 title="Sign Out"
               >

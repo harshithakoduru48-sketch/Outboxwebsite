@@ -88,7 +88,7 @@ export async function loginWithGoogleCredential(credential: string): Promise<Use
   return res.data.user;
 }
 
-export async function loginWithDemo(): Promise<User> {
-  const res = await api.post('/auth/demo');
+export async function loginWithDemo(name?: string, email?: string): Promise<User> {
+  const res = await api.post('/auth/demo', { name, email });
   return res.data.user;
 }
